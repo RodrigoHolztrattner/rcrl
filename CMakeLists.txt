@@ -44,7 +44,7 @@ set(PROJECT_NAME "RCRL")
 SET(CMAKE_CXX_FLAGS "/Zi /sdl /MP /Oi /Gy /permissive- /GR- /TP /EHsc")
 SET(CMAKE_CXX_FLAGS_DEBUG "/ZI /sdl /MP /JMC /permissive- /GR- /TP /EHsc /MDd /Od")
 
-set(RCRL_FILES "Packet")
+set(RCRL_FILES "src/rcrl")
 include_directories(RCRL_FILES)
 
 # Gather all files
@@ -73,6 +73,18 @@ add_library(${PROJECT_NAME} STATIC
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${tinyprocesslibrary_SOURCE_DIR})
 
+# defines needed for RCRL integration
+target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_PLUGIN_FILE=\"${plugin_file}\"")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_PLUGIN_NAME=\"plugin\"")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_BUILD_FOLDER=\"${PROJECT_BINARY_DIR}\"")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_BIN_FOLDER=\"$<TARGET_FILE_DIR:${PROJECT_NAME}>/\"")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_EXTENSION=\"${CMAKE_SHARED_LIBRARY_SUFFIX}\"")
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio" OR ${CMAKE_GENERATOR} MATCHES "Xcode")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_CONFIG=\"$<CONFIG>\"")
+endif()
+# unimportant - to construct a path to the fonts in the third party imgui folder
+target_compile_definitions(${PROJECT_NAME} PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
+
 ###########
 # INSTALL #
 ###########
@@ -87,8 +99,4 @@ install(TARGETS ${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   CXX_STANDARD 17
-	CXX_STANDARD_REQUIRED ON)    
-	
-
-add_definitions(-DUNICODE 
-	-D_UNICODE)
+	CXX_STANDARD_REQUIRED ON)
