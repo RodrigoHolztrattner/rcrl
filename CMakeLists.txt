@@ -72,6 +72,7 @@ add_library(${PROJECT_NAME} STATIC
   ${ALL_RCRL_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${tinyprocesslibrary_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} tiny-process-library)
 
 # defines needed for RCRL integration
 target_compile_definitions(${PROJECT_NAME} PRIVATE "RCRL_PLUGIN_FILE=\"${plugin_file}\"")
